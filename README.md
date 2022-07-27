@@ -2,7 +2,7 @@
 
 1. docker run
 ```bash
- docker run --name mysql8 -e MYSQL_ROOT_PASSWORD=root -p 3307:3306 -d mysql:8.0.27   
+ docker run --name mysql5.7.38 -e MYSQL_ROOT_PASSWORD=root -p 3308:3306 -d mysql:5.7.38 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 ```
 
 - 현재 `3306` 포트 점유 중이므로, `3307` 로 변경
