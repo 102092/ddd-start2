@@ -70,6 +70,11 @@ public class Order {
         calculateTotalAmounts();
     }
 
+    /**
+     *
+     * @param orderLines
+     * 최소 1개 이상의 orderLine 을 가지고 있어야 주문이 성립될 수 있음.
+     */
     private void verifyAtLeastOneOrMoreOrderLines(List<OrderLine> orderLines) {
         if (orderLines == null || orderLines.isEmpty()) {
             throw new IllegalArgumentException("no OrderLine");
@@ -110,12 +115,22 @@ public class Order {
         return state;
     }
 
+    /**
+     *
+     * @param newShippingInfo
+     *
+     * 규칙 1 - 배송 전에 배송지 변경을 할 수 있음.
+     */
     public void changeShippingInfo(ShippingInfo newShippingInfo) {
         verifyNotYetShipped();
         setShippingInfo(newShippingInfo);
         Events.raise(new ShippingInfoChangedEvent(number, newShippingInfo));
     }
 
+
+    /**
+     * 규칙 2 - 배송 전에 주문 취소를 할 수 있음.
+     */
     public void cancel() {
         verifyNotYetShipped();
         this.state = OrderState.CANCELED;
