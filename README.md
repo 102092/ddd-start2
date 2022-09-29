@@ -32,6 +32,10 @@
   - JPA가 엔티티 데이터에 접근하는 방식을 정의함. 
   - [참고1](https://ultrakain.gitbooks.io/jpa/content/chapter4/chapter4.7.html)
   - [참고2](https://ttl-blog.tistory.com/120)
+- AttributeConverter
+  - [참고](https://www.baeldung.com/jpa-attribute-converters)
+- `@SecondaryTable`
+  - [참고](https://www.baeldung.com/jpa-mapping-single-entity-to-multiple-tables)
 
 ### 읽으면서..
 
@@ -114,3 +118,28 @@
 - 애그리거트가 갖고 있는 데이터를 이용해서, 다른 애그리거트를 생성해야한다면 애그리거트에 팩토리 메서드를 구현하는 것을 고려해보자
   - store의 데이터를 이용해서 product을 생성한다면,
   - store에서 product을 생성하는 팩토리 메서드를 추가하면... 좋음.
+
+#### 4ch
+
+- 리포지터리 구현 클래스는 인프라스트럭쳐 영역
+- Spring Data JPA를 사용하면 인터페이스만 구현하면 구현 객체는 스프링에서 알아서 만들어줌.
+- JPA에서 @Entity 나 @Embeddable 로 클래스를 매칭하려면 기본 생성자를 제공해야함 (public or protected..)
+  - protected로 선언하면 다른 코드에서 기본 생성자를 이용하지 못하므로 권장되는 설정
+- 엔티티에 프로퍼티를 위한 공개 get/set 메서드를 추가하면, 도메인의 의도가 사라지고 객체가 아닌 데이터 기반으로 엔티티를 구현할 가능성이 높아짐.
+  - setter 대신, changeStatus.. 와 같이 의도가 잘 나타나는 이름명을 사용할 수 있도록 해야함.
+- 두 개 이상의 프로퍼티를 가진 밸류 타입을 한 개 커럽에 매핑하려면.. `AttributeConverter`를 이용
+- 밸류 컬렉션을 별도 테이블에 매핑할 떄는 `@ElementCollection`, `@CollectionTable` 을 같이 이용함.
+- 밸류 컬렉션을 한 개 컬럼에 매핑할 때는?
+  - AttributeConverter 이용
+- 식별자라는 의미를 부각시키기 위해서, 식별자 자체를 밸류 타입으로 만들 수도 있음.
+  - JPA에서 식별자 타입은 Serializable 이어야 하므로, 밸류 타입으로 만들 때 해당 인터페이스를 상속 받아야함.
+- 애그리거트에서 루트 엔티티를 뺀 나머지 구성 요소는 대부분 밸류.
+  - 루트 엔티티 이외에 또 엔티티가 존재하게 되는 경우, 진짜 엔티티로 필요한지 확인이 필요함.
+  - 밸류를 매칭한 테이블을 지정하기 위해 `@SecondaryTable`, `@AttributeOverride` 를 이용
+- 계층 구조를 가진 밸류 타입을 구현하기 위해?
+  - abstract 클래스
+  - `@Inheritance`, `@DiscriminatorColumn` 이용 
+- 루트 엔티티를 로딩하는 시점에 애그리거트에 속한 객체를 모두 로딩해야 하는 것은 아니다.
+- 저장, 삭제 메서드는 애그리거트 루트 뿐만 아니라, 속한 모든 객체에게 전파되어야함
+- 리포지터리와, 도메인 모델의 구현 기술은 거의 바뀌지 않는다.
+  - 그러므로 도메인 모델이 구현 기술에 의존해도 괜찮음

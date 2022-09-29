@@ -11,6 +11,10 @@ import java.util.Objects;
 @Embeddable
 public class Orderer {
 
+    // MemberId은  @Column(name = "member_id") 으로 id가 설정되어있음.
+    // 그런데 Orderer에 설정된 @Column은 orderer_id이므로 위와 다르다!
+    // 그래서 AttributeOverride 속성명을 재정의했음.
+    // MemberId의 id라는 필드는 테이블의 컬럼명의 orderer_id와 매칭된다는 의미
     @AttributeOverrides(
             @AttributeOverride(name = "id", column = @Column(name = "orderer_id"))
     )

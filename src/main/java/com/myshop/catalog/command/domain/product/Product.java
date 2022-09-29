@@ -66,6 +66,10 @@ public class Product {
     }
 
     public void changeImages(List<Image> newImages) {
+        // clear() 하는 순간 select * from image where product_id = ? 쿼리로 매칭된 이미지를 다 가져오고.
+        // delete from where image_id 로 각각 O(N) 만큼 실행됨.
+        // 만약 이미지 개수가 많다면, 효율적이지 않은 방법이 됨.
+        // 그래서 만약 @Embeddable로 이 부분을 구현한다면 위에서 야기되는 문제를 해결할 수 있음. (select 문 없이 한번의 delete로 삭제 쿼리 실행됨)
         images.clear();
         images.addAll(newImages);
     }
